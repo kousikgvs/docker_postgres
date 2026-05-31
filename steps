@@ -1,0 +1,42 @@
+docker build -t my-postgres .
+docker run -d --name my-postgres -e POSTGRES_PASSWORD=mysecret -p 5432:5432 my-postgres
+
+---------------------------
+The official `postgres` image **requires** `POSTGRES_PASSWORD` to be set — the container won't start without it (unless you use `POSTGRES_HOST_AUTH_METHOD=trust`, which is insecure).
+
+Defaults when you don't set them explicitly:
+- **User:** `postgres`
+- **Database:** `postgres`
+- **Password:** none by default → container exits with an error
+
+So you must pass at least a password:
+
+```powershell
+docker run -d --name my-postgres -e POSTGRES_PASSWORD=mysecret -p 5432:5432 my-postgres
+```
+
+Then connect with:
+- host: `localhost`, port: `5432`
+- user: `postgres`
+- password: `mysecret`
+- db: `postgres`
+---------------------------
+
+After your docker image is running -> container and uses port 5432 you have to stop it for docker compose file
+
+docker ps --filter "publish=5432"
+docker stop my-postgres
+docker rm my-postgres
+
+----------------------------
+
+docker compose up -d        # start in background
+docker compose ps           # check status
+docker compose logs -f      # tail logs
+docker compose down         # stop & remove
+
+------------------------------
+
+docker exec -it local-postgres psql -U app_user -d app_db -c "SELECT version();"
+
+------------------------------
